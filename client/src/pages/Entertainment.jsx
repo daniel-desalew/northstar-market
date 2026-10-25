@@ -1,7 +1,5 @@
-﻿import {
+import {
   ArrowLeft,
-  BookOpen,
-  Headphones,
   Music2,
   Play,
   Radio,
@@ -644,6 +642,12 @@ const books = [
   },
 ];
 
+const featuredKindleVideo = {
+  title: "Inside the Story",
+  creator: "Kindle Studio Preview",
+  id: "aqz-KE-bpKQ",
+};
+
 const kindleDevices = [
   {
     id: "kindle-2026",
@@ -1048,6 +1052,36 @@ function Entertainment() {
             >
               <span aria-hidden="true">←</span> MAIN MENU
             </Link>
+
+            <section className="kindle-feature-hero" aria-label="Featured Kindle collections">
+              <div className="kindle-feature-copy">
+                <span className="media-kicker">Kindle books &amp; reading</span>
+                <h2>Discover your next favorite read</h2>
+                <p>
+                  Thoughtful stories, immersive nonfiction, and beautifully paced
+                  reads designed for your next quiet moment.
+                </p>
+                <div className="kindle-feature-meta">
+                  <span>New picks</span>
+                  <span>Curated lists</span>
+                  <span>Instant reading</span>
+                </div>
+              </div>
+              <div className="kindle-feature-visuals">
+                <div className="kindle-feature-cover-wrap">
+                  <img
+                    src={books[0].cover}
+                    alt={books[0].title}
+                    loading="lazy"
+                  />
+                  <div className="kindle-feature-badge">Featured</div>
+                </div>
+                <div className="kindle-feature-video-card">
+                  <YouTubePlayer item={featuredKindleVideo} kind="Book Preview" />
+                </div>
+              </div>
+            </section>
+
             <nav className="kindle-navigation" aria-label="Kindle categories">
               <section className="kindle-navigation-group">
                 <h1>Kindle</h1>
@@ -1237,29 +1271,62 @@ function Entertainment() {
                         </button>
                       </article>
                     ) : (
-                      <div className="kindle-book-shelf">
-                        {books.map((book, index) => (
-                          <button
-                            className="kindle-book-tile"
-                            type="button"
-                            key={book.title}
-                            onClick={() =>
-                              setKindleScreen({
-                                kind: "reader",
-                                title: book.title,
-                                book: index,
-                              })
-                            }
-                          >
-                            <span className="kindle-book-cover">
-                              <img src={book.cover} alt="" loading="lazy" />
-                            </span>
-                            <strong>{book.title}</strong>
-                            <small>{book.author}</small>
-                            <span>Read sample ›</span>
-                          </button>
-                        ))}
-                      </div>
+                      <>
+                        <section className="kindle-books-showcase" aria-label="Featured books">
+                          <div className="kindle-books-showcase-copy">
+                            <span className="media-kicker">Featured collection</span>
+                            <h2>{books[0].title}</h2>
+                            <p>{books[0].excerpt}</p>
+                            <div className="kindle-showcase-meta">
+                              <span>{books[0].author}</span>
+                              <span>Sample preview</span>
+                            </div>
+                          </div>
+                          <div className="kindle-books-showcase-visuals">
+                            <div className="kindle-books-cover-panel">
+                              <img
+                                src={books[0].cover}
+                                alt={books[0].title}
+                                loading="lazy"
+                              />
+                            </div>
+                            <div className="kindle-books-video-panel">
+                              <YouTubePlayer
+                                item={{
+                                  id: "aqz-KE-bpKQ",
+                                  title: books[0].title,
+                                  creator: books[0].author,
+                                }}
+                                kind="Book preview"
+                              />
+                            </div>
+                          </div>
+                        </section>
+
+                        <div className="kindle-book-shelf">
+                          {books.map((book, index) => (
+                            <button
+                              className="kindle-book-tile"
+                              type="button"
+                              key={book.title}
+                              onClick={() =>
+                                setKindleScreen({
+                                  kind: "reader",
+                                  title: book.title,
+                                  book: index,
+                                })
+                              }
+                            >
+                              <span className="kindle-book-cover">
+                                <img src={book.cover} alt="" loading="lazy" />
+                              </span>
+                              <strong>{book.title}</strong>
+                              <small>{book.author}</small>
+                              <span>Read sample ›</span>
+                            </button>
+                          ))}
+                        </div>
+                      </>
                     )}
                   </>
                 )}

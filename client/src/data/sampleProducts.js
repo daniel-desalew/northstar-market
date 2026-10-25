@@ -5,6 +5,11 @@ export const categories = [
       'https://images.unsplash.com/photo-1498049794561-7780e7231661?auto=format&fit=crop&w=720&q=80',
   },
   {
+    name: 'Computers',
+    image:
+      'https://images.unsplash.com/photo-1496181133206-80ce9b88a853?auto=format&fit=crop&w=720&q=80',
+  },
+  {
     name: 'Home & Kitchen',
     image:
       'https://images.unsplash.com/photo-1556911220-e15b29be8c8f?auto=format&fit=crop&w=720&q=80',
@@ -18,6 +23,11 @@ export const categories = [
     name: 'Books',
     image:
       'https://images.unsplash.com/photo-1507842217343-583bb7270b66?auto=format&fit=crop&w=720&q=80',
+  },
+  {
+    name: 'Arts & Crafts',
+    image:
+      'https://images.unsplash.com/photo-1513364776144-60967b0f800f?auto=format&fit=crop&w=720&q=80',
   },
 ]
 
@@ -101,6 +111,58 @@ export const sampleProducts = [
       'https://images.unsplash.com/photo-1511499767150-a48a237f0083?auto=format&fit=crop&w=900&q=85',
   },
   {
+    id: 'everyday-linen-shirt',
+    name: 'Relaxed-fit linen shirt for everyday wear',
+    category: 'Fashion',
+    price: 34.99,
+    originalPrice: 44.99,
+    rating: 4.6,
+    reviewCount: 143,
+    stock: 26,
+    badge: 'Popular',
+    image:
+      'https://images.unsplash.com/photo-1596755094514-f87e34085b2c?auto=format&fit=crop&w=900&q=85',
+  },
+  {
+    id: 'classic-leather-sneakers',
+    name: 'Classic low-top sneakers with cushioned comfort',
+    category: 'Fashion',
+    price: 62.0,
+    originalPrice: 79.0,
+    rating: 4.7,
+    reviewCount: 211,
+    stock: 17,
+    badge: 'Top rated',
+    image:
+      'https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=900&q=85',
+  },
+  {
+    id: 'everyday-crossbody-bag',
+    name: 'Compact crossbody bag with adjustable strap',
+    category: 'Fashion',
+    price: 39.5,
+    originalPrice: 52.0,
+    rating: 4.5,
+    reviewCount: 98,
+    stock: 21,
+    badge: 'Great value',
+    image:
+      'https://images.unsplash.com/photo-1548036328-c9fa89d128fa?auto=format&fit=crop&w=900&q=85',
+  },
+  {
+    id: 'woven-scarf',
+    name: 'Soft woven scarf for cool-weather layering',
+    category: 'Fashion',
+    price: 24.0,
+    originalPrice: 31.0,
+    rating: 4.4,
+    reviewCount: 67,
+    stock: 32,
+    badge: 'New',
+    image:
+      'https://images.unsplash.com/photo-1601924994987-69e26d50dc26?auto=format&fit=crop&w=900&q=85',
+  },
+  {
     id: 'design-notebook',
     name: 'Ideas in motion: a practical guide to creative thinking',
     category: 'Books',
@@ -112,6 +174,45 @@ export const sampleProducts = [
     badge: 'Reader favorite',
     image:
       'https://images.unsplash.com/photo-1544947950-fa07a98d237f?auto=format&fit=crop&w=900&q=85',
+  },
+  {
+    id: 'quiet-mornings-book',
+    name: 'Quiet mornings: a gentle guide to mindful living',
+    category: 'Books',
+    price: 16.99,
+    originalPrice: 21.99,
+    rating: 4.7,
+    reviewCount: 186,
+    stock: 28,
+    badge: 'Bestseller',
+    image:
+      'https://images.unsplash.com/photo-1512820790803-83ca734da794?auto=format&fit=crop&w=900&q=85',
+  },
+  {
+    id: 'wild-garden-book',
+    name: 'The wild garden: seasonal ideas for greener spaces',
+    category: 'Books',
+    price: 22.5,
+    originalPrice: 28.0,
+    rating: 4.8,
+    reviewCount: 124,
+    stock: 19,
+    badge: 'Editor pick',
+    image:
+      'https://images.unsplash.com/photo-1495446815901-a7297e633e8d?auto=format&fit=crop&w=900&q=85',
+  },
+  {
+    id: 'small-worlds-book',
+    name: 'Small worlds: stories for curious minds',
+    category: 'Books',
+    price: 14.25,
+    originalPrice: 18.0,
+    rating: 4.6,
+    reviewCount: 97,
+    stock: 35,
+    badge: 'Popular read',
+    image:
+      'https://images.unsplash.com/photo-1519682337058-a94d519337bc?auto=format&fit=crop&w=900&q=85',
   },
   {
     id: 'portable-bluetooth-speaker',

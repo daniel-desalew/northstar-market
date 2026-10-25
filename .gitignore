@@ -6,3 +6,10 @@ client/dist/
 client/.env
 server/.env
 npm-debug.log*
+node_modules/
+**/node_modules/
+.env
+.env.*
+!.env.example
+dist/
+build/

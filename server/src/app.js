@@ -26,10 +26,8 @@ app.use(express.urlencoded({ extended: false, limit: '100kb' }))
 app.use(createRateLimit({ windowMs: 60_000, limit: 120 }))
 
 app.get('/api/health', (req, res) => {
-  const databaseReady = require('mongoose').connection.readyState === 1
-  res.status(databaseReady ? 200 : 503).json({
-    status: databaseReady ? 'ok' : 'starting',
-    database: databaseReady ? 'connected' : 'disconnected',
+  res.status(200).json({
+    status: 'ok',
     service: 'northstar-market-api',
   })
 })

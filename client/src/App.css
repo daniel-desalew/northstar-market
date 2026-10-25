@@ -1763,9 +1763,12 @@ main {
     bottom: 0;
     left: 0;
     min-height: 56px;
-    padding: 5px 10px max(5px, env(safe-area-inset-bottom));
+    padding: 5px 8px max(5px, env(safe-area-inset-bottom));
     display: flex;
-    justify-content: space-around;
+    justify-content: flex-start;
+    gap: 4px;
+    overflow-x: auto;
+    scroll-snap-type: x proximity;
     color: #e7eef3;
     background: var(--navy-deep);
     box-shadow: 0 -5px 20px rgba(10, 27, 41, 0.12);
@@ -1773,12 +1776,14 @@ main {
 
   .mobile-navigation a {
     min-width: 58px;
+    flex: 0 0 58px;
     display: flex;
     align-items: center;
     flex-direction: column;
     justify-content: center;
     gap: 2px;
     font-size: 9px;
+    scroll-snap-align: start;
   }
 }
 
@@ -1786,6 +1791,11 @@ main {
 .menu-backdrop { position: fixed; inset: 0; z-index: 1000; background: rgba(15, 17, 17, .58); animation: menu-fade-in .18s ease-out; }
 .menu-drawer { position: absolute; inset: 0 auto 0 0; width: min(380px, 88vw); overflow-y: auto; color: #0f1111; background: #fff; box-shadow: 6px 0 24px rgba(0,0,0,.24); animation: menu-slide-in .22s ease-out; overscroll-behavior: contain; }
 .menu-drawer-header { position: sticky; top: 0; z-index: 1; display: flex; align-items: center; justify-content: space-between; min-height: 58px; background: #232f3e; }
+.menu-drawer-submenu-header { background: #eaeded; border-bottom: 1px solid #d5d9d9; }
+.menu-submenu-back { min-height: 58px; padding: 0 12px; display: inline-flex; align-items: center; gap: 8px; color: #172b3b; background: transparent; border: 0; font: inherit; font-size: 13px; font-weight: 750; cursor: pointer; }
+.menu-submenu-back:focus-visible { outline: 3px solid #ff9900; outline-offset: -3px; }
+.menu-drawer-submenu-header .menu-close { color: #172b3b; border-color: #879196; }
+.menu-drawer-submenu-header .menu-close:hover { background: rgba(0,0,0,.08); }
 .menu-greeting { display: flex; align-items: center; gap: 10px; padding: 14px 22px; color: #fff; font-size: 19px; font-weight: 700; text-decoration: none; }
 .menu-close { position: fixed; left: min(396px, calc(88vw + 14px)); top: 14px; display: grid; place-items: center; width: 38px; height: 38px; color: #fff; background: transparent; border: 1px solid rgba(255,255,255,.55); border-radius: 4px; cursor: pointer; }
 .menu-close:hover { background: rgba(255,255,255,.15); }
@@ -1802,11 +1812,38 @@ main {
 .menu-section button.menu-see-all { width: calc(100% + 20px); min-height: 43px; margin: 0 -10px; padding: 0 10px; display: flex; align-items: center; color: #303b46; background: transparent; border: 0; border-radius: 3px; font: inherit; font-size: 15px; text-align: left; cursor: pointer; }
 .menu-section button.menu-see-all:hover { color: #111; background: #f3f4f4; }
 .menu-section button.menu-see-all:focus-visible { outline: 3px solid #ff9900; outline-offset: 2px; }
+.menu-section button.menu-department-link { width: calc(100% + 20px); min-height: 43px; margin: 0 -10px; padding: 0 10px; display: flex; align-items: center; justify-content: space-between; gap: 10px; color: #303b46; background: transparent; border: 0; border-radius: 3px; font: inherit; font-size: 15px; text-align: left; text-decoration: none; cursor: pointer; transition: background .15s ease, color .15s ease; }
+.menu-section button.menu-department-link:hover { color: #111; background: #f3f4f4; }
+.menu-section button.menu-department-link:focus-visible { outline: 3px solid #ff9900; outline-offset: 2px; }
+.menu-department-submenu { padding-top: 16px; }
+.menu-department-submenu h2 { margin-bottom: 10px; }
 .menu-see-all svg { transition: transform .18s ease; }
 .menu-see-all svg.is-expanded { transform: rotate(180deg); }
-.menu-program > span:first-child { display: grid; gap: 3px; }
-.menu-program small { color: #687783; font-size: 11px; font-weight: 400; line-height: 1.35; }
-.menu-section .menu-program { min-height: 52px; }
+.menu-program-list { display: grid; gap: 5px; }
+.menu-section a.menu-program { min-width: 0; min-height: 58px; margin: 0 -10px; padding: 7px 10px; justify-content: space-between; gap: 10px; }
+.menu-program > span:nth-child(2) { min-width: 0; display: grid; gap: 3px; }
+.menu-program > span:nth-child(2) strong { color: #243746; font-size: 11px; line-height: 1.3; }
+.menu-program > span:nth-child(2) small { color: #687783; font-size: 9px; font-weight: 400; line-height: 1.35; }
+.menu-program > span:last-child { margin-left: auto; color: #687783; font-size: 18px; }
+.menu-program:focus-visible { outline: 3px solid #ff9900; outline-offset: 2px; }
+.menu-program-second-chance { min-width: 0; min-height: 76px; margin: 0 -10px; padding: 7px 10px; display: grid; grid-template-columns: minmax(0, 1fr) 132px; align-items: center; gap: 9px; color: #303b46; border-radius: 3px; }
+.menu-program-second-chance:hover { background: #f3f4f4; }
+.menu-program-copy { min-width: 0; display: flex; align-items: center; justify-content: space-between; gap: 5px; color: inherit; text-decoration: none; }
+.menu-program-copy > span:first-child { min-width: 0; display: grid; gap: 3px; }
+.menu-program-copy strong { color: #243746; font-size: 11px; line-height: 1.3; }
+.menu-program-copy small { color: #687783; font-size: 9px; line-height: 1.35; }
+.menu-program-copy > span:last-child { color: #687783; font-size: 18px; }
+.menu-program-copy:focus-visible, .menu-second-chance-play:focus-visible, .menu-second-chance-player button:focus-visible { outline: 3px solid #ff9900; outline-offset: 2px; }
+.menu-second-chance-media { min-width: 0; display: grid; grid-template-columns: 48px minmax(0, 1fr); align-items: center; gap: 6px; }
+.menu-second-chance-media > img { width: 48px; height: 48px; object-fit: cover; border-radius: 7px; background: #e7ecef; }
+.menu-second-chance-play, .menu-second-chance-player { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; padding: 0; color: #fff; background: #13222c; border: 0; border-radius: 6px; }
+.menu-second-chance-play { display: grid; place-items: center; font: 700 9px/1 Manrope, sans-serif; cursor: pointer; }
+.menu-second-chance-play::before { content: ""; position: absolute; inset: 0; background: url("https://img.youtube.com/vi/R6MlUcmOul8/mqdefault.jpg") center / cover; opacity: .78; }
+.menu-second-chance-play { isolation: isolate; }
+.menu-second-chance-play::after { content: "▶"; position: relative; z-index: 1; width: 23px; height: 23px; display: grid; place-items: center; padding-left: 2px; background: rgba(12, 27, 38, .8); border: 1px solid rgba(255,255,255,.75); border-radius: 50%; }
+.menu-second-chance-play:hover::after { background: #087f79; }
+.menu-second-chance-player iframe { display: block; width: 100%; height: 100%; border: 0; }
+.menu-second-chance-player button { position: absolute; top: 2px; right: 2px; width: 19px; height: 19px; display: grid; place-items: center; padding: 0; color: #fff; background: rgba(13, 30, 43, .85); border: 1px solid rgba(255,255,255,.55); border-radius: 50%; cursor: pointer; }
 @keyframes menu-fade-in { from { opacity: 0; } to { opacity: 1; } }
 @keyframes menu-slide-in { from { transform: translateX(-18px); } to { transform: translateX(0); } }
 @media (prefers-reduced-motion: reduce) { .menu-backdrop, .menu-drawer { animation: none; } }
@@ -1836,7 +1873,149 @@ main {
 .auth-secure { margin: 2px 0 0; display: flex; align-items: center; justify-content: center; gap: 6px; color: #687078; font-size: 10px; }
 @media (max-width: 480px) { .auth-page { padding: 22px 14px 48px; } .auth-card { padding: 22px 19px 18px; } }
 
+.books-category-page {
+  display: grid;
+  gap: 26px;
+}
+.books-hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  align-items: center;
+  overflow: hidden;
+  padding: 28px 28px 22px;
+  background: linear-gradient(135deg, #f4f7f9 0%, #edf5f3 100%);
+  border: 1px solid #e1e5e6;
+  border-radius: 28px;
+  box-shadow: 0 22px 42px rgba(17, 41, 48, 0.06);
+}
+.books-hero-copy {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 10px;
+  max-width: 420px;
+  padding: 18px 10px 18px 6px;
+  background: rgba(255, 255, 255, 0.4);
+  border-radius: 18px;
+  backdrop-filter: blur(2px);
+}
+.books-hero-copy h1 {
+  margin: 0;
+  color: #182d3d;
+  font: 800 clamp(44px, 5vw, 72px)/0.95 Manrope, sans-serif;
+  letter-spacing: -0.07em;
+}
+.books-hero-copy p {
+  margin: 0;
+  color: #546579;
+  font-size: 18px;
+  line-height: 1.5;
+}
+.books-video-section { min-width: 0; }
+.books-video-panel {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+  background: linear-gradient(180deg, #f7f9fb 0%, #edf5f3 100%);
+  border: 1px solid #dfeae9;
+  border-radius: 22px;
+}
+.books-video-panel-header {
+  display: grid;
+  gap: 4px;
+}
+.books-video-panel-header h3 {
+  margin: 0;
+  color: #1b2f3d;
+  font: 800 24px/1.2 Manrope, sans-serif;
+  letter-spacing: -0.04em;
+}
+.books-video-list {
+  display: grid;
+  gap: 8px;
+}
+.books-video-list button {
+  display: grid;
+  grid-template-columns: 24px 88px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 10px 12px;
+  color: #253b4d;
+  text-align: left;
+  background: rgba(255,255,255,0.7);
+  border: 1px solid rgba(160, 175, 181, 0.8);
+  border-radius: 14px;
+  cursor: pointer;
+  transition: transform 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.books-video-list button:hover,
+.books-video-list button.is-current {
+  transform: translateY(-1px);
+  border-color: rgba(14, 120, 108, 0.6);
+  box-shadow: 0 12px 22px rgba(10, 67, 67, 0.08);
+}
+.books-video-list button > span:first-child {
+  display: grid;
+  place-items: center;
+  width: 24px;
+  height: 24px;
+  color: #0d645f;
+  background: #e8f6f3;
+  border-radius: 50%;
+  font-size: 9px;
+  font-weight: 800;
+}
+.books-video-thumbnail {
+  display: block;
+  width: 88px;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+  background: #e4eaed;
+  border-radius: 8px;
+}
+.books-video-copy {
+  min-width: 0;
+  display: grid;
+  gap: 5px;
+}
+.books-video-list button .books-video-copy strong {
+  font-size: 13px;
+  line-height: 1.35;
+}
+.books-video-list button .books-video-copy small {
+  color: #61768a;
+  font-size: 10px;
+  line-height: 1.4;
+}
+.books-video-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: 18px;
+  aspect-ratio: 16 / 9;
+  background: #111827;
+  border: 1px solid rgba(17,24,39,0.1);
+}
+.books-video-frame iframe {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  border: 0;
+}
 
+@media (max-width: 760px) {
+  .books-hero {
+    grid-template-columns: 1fr;
+    padding: 18px 18px 20px;
+  }
+  .books-hero-copy {
+    max-width: none;
+    padding: 0;
+  }
+}
 
 /* Compact, two-step sign-in panel */
 .auth-page { min-height: 76vh; padding: 30px 16px 56px; display: flex; align-items: center; flex-direction: column; }
@@ -1971,14 +2150,36 @@ main {
 
 /* Electronics department catalog */
 .electronics-page-title { margin-bottom: 20px; }
-.electronics-department-layout { display: grid; grid-template-columns: minmax(220px, 260px) minmax(0, 1fr); align-items: start; gap: 22px; }
+.electronics-department-layout { display: grid; grid-template-columns: minmax(0, 1fr); align-items: start; gap: 22px; }
+.electronics-department-layout.has-video-sidebar { grid-template-columns: minmax(290px, 340px) minmax(0, 1fr); }
+.electronics-department-layout.has-computer-sidebar { grid-template-columns: minmax(230px, 270px) minmax(0, 1fr); }
+.electronics-department-layout.has-smart-home-sidebar { grid-template-columns: minmax(230px, 270px) minmax(0, 1fr); }
 .electronics-department-sidebar { overflow: hidden; background: #fff; border: 1px solid #d5d9d9; }
 .electronics-department-sidebar h2 { margin: 0; padding: 17px 18px 12px; color: #171b1e; border-bottom: 1px solid #d5d9d9; font: 700 17px/1.3 Manrope, sans-serif; }
 .electronics-department-sidebar nav { display: grid; padding: 3px 0 8px; }
-.electronics-department-sidebar nav button { min-height: 44px; padding: 0 16px; display: flex; align-items: center; justify-content: space-between; gap: 10px; color: #41484d; text-align: left; background: #fff; border: 0; font: inherit; font-size: 13px; cursor: pointer; }
+.electronics-department-sidebar nav button { min-height: 44px; padding: 0 16px; display: flex; align-items: center; justify-content: flex-start; gap: 10px; color: #41484d; text-align: left; background: #fff; border: 0; font: inherit; font-size: 13px; cursor: pointer; }
+.electronics-department-arrow { flex: 0 0 17px; color: #536571; }
+.electronics-department-sidebar nav button:hover .electronics-department-arrow, .electronics-department-sidebar nav button.is-current .electronics-department-arrow { color: #087f79; }
 .electronics-department-sidebar nav button:hover, .electronics-department-sidebar nav button.is-current { color: #111; background: #f4f5f5; }
 .electronics-department-sidebar nav button.is-current { font-weight: 700; }
 .electronics-department-sidebar nav button:focus-visible { outline: 3px solid #ff9900; outline-offset: -3px; }
+.electronics-video-sidebar { min-width: 0; overflow: hidden; background: #fff; border: 1px solid #d5d9d9; border-radius: 8px; }
+.electronics-video-sidebar > h2 { margin: 0; padding: 16px 16px 12px; display: flex; align-items: center; justify-content: space-between; color: #172b3b; border-bottom: 1px solid #e3e8ea; font: 700 16px/1.3 Manrope, sans-serif; }
+.electronics-video-sidebar > h2 span { padding: 4px 8px; color: #087f79; background: #e8f4f5; border-radius: 999px; font: 700 10px/1.2 Manrope, sans-serif; }
+.electronics-video-sidebar .electronics-reference-video { margin: 12px; padding: 10px; }
+.electronics-video-sidebar .electronics-reference-video-heading { align-items: flex-start; flex-direction: column; gap: 7px; }
+.electronics-video-sidebar .electronics-reference-video-heading h3 { font-size: 12px; }
+.electronics-video-sidebar .electronics-reference-video-heading > span { font-size: 8px; }
+.electronics-video-list { max-height: 375px; overflow-y: auto; border-top: 1px solid #e3e8ea; }
+.electronics-video-list button { width: 100%; min-height: 57px; padding: 9px 12px; display: flex; align-items: center; gap: 10px; color: #334854; text-align: left; background: #fff; border: 0; border-bottom: 1px solid #edf0f1; cursor: pointer; }
+.electronics-video-list button:nth-child(even) { background: #eff7f6; }
+.electronics-video-list button:hover, .electronics-video-list button.is-current { background: #f0f7f6; }
+.electronics-video-list button.is-current { box-shadow: inset 3px 0 #087f79; }
+.electronics-video-list button:focus-visible { outline: 3px solid #ff9900; outline-offset: -3px; }
+.electronics-video-list-number { flex: 0 0 25px; color: #71828c; font-size: 10px; font-weight: 700; }
+.electronics-video-list-copy { min-width: 0; display: grid; gap: 4px; }
+.electronics-video-list-copy strong { color: #172b3b; font-size: 10px; line-height: 1.4; }
+.electronics-video-list-copy small { color: #687783; font-size: 9px; line-height: 1.35; }
 .electronics-department-main { min-width: 0; padding: 22px; background: #fff; border: 1px solid #dce2e5; border-radius: 8px; }
 .electronics-department-intro { margin-bottom: 22px; padding-bottom: 18px; display: flex; align-items: center; gap: 17px; border-bottom: 1px solid #e3e8ea; }
 .electronics-department-icon { width: 58px; height: 58px; flex: 0 0 58px; display: grid; place-items: center; color: #145b70; background: #e8f4f5; border-radius: 12px; font: 700 32px/1 Manrope, sans-serif; }
@@ -1988,6 +2189,21 @@ main {
 .electronics-reference-heading { margin-bottom: 11px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
 .electronics-reference-heading h3 { margin: 0; color: #172b3b; font: 700 16px/1.3 Manrope, sans-serif; }
 .electronics-reference-heading > span { color: #687783; font-size: 10px; }
+.electronics-reference-video { margin: 0 0 21px; padding: 14px; background: #f5f7f8; border: 1px solid #e3e8ea; border-radius: 9px; }
+.electronics-reference-video-heading { margin-bottom: 10px; display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.electronics-reference-video-heading .eyebrow { color: #087f79; font-size: 9px; font-weight: 800; letter-spacing: .8px; text-transform: uppercase; }
+.electronics-reference-video-heading h3 { margin: 3px 0 0; color: #172b3b; font: 700 14px/1.35 Manrope, sans-serif; }
+.electronics-reference-video-heading > span { flex: 0 0 auto; padding: 5px 8px; color: #395360; background: #e8f4f5; border-radius: 999px; font-size: 9px; font-weight: 700; }
+.electronics-reference-video-frame { position: relative; width: 100%; aspect-ratio: 16 / 9; overflow: hidden; background: #101b25; border-radius: 6px; }
+.electronics-reference-video-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
+.department-video-choices { margin-top: 12px; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 9px; }
+.department-video-choices button { min-width: 0; padding: 9px; display: flex; align-items: flex-start; gap: 9px; color: #334854; text-align: left; background: #fff; border: 1px solid #dce2e5; border-radius: 6px; cursor: pointer; }
+.department-video-choices button:hover, .department-video-choices button.is-current { background: #f0f7f6; border-color: #69aaa8; }
+.department-video-choices button:focus-visible { outline: 3px solid #ff9900; outline-offset: 2px; }
+.department-video-choices button > span:first-child { width: 20px; height: 20px; flex: 0 0 20px; display: grid; place-items: center; color: #087f79; background: #e8f4f5; border-radius: 50%; font-size: 9px; font-weight: 800; }
+.department-video-choices button > span:last-child { min-width: 0; display: grid; gap: 4px; }
+.department-video-choices strong { color: #172b3b; font-size: 10px; line-height: 1.4; }
+.department-video-choices small { color: #687783; font-size: 9px; }
 .electronics-reference-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 11px; }
 .electronics-reference-card { min-width: 0; min-height: 110px; padding: 12px; display: grid; grid-template-columns: 42px minmax(0, 1fr) 16px; align-items: center; gap: 11px; color: #172b3b; text-align: left; background: #fff; border: 1px solid #e0e6e9; border-radius: 8px; cursor: pointer; }
 .electronics-reference-card:hover, .electronics-reference-card.is-selected { border-color: #69aaa8; box-shadow: 0 0 0 2px rgba(8,127,121,.08); }
@@ -2022,9 +2238,10 @@ main {
 .electronics-reference-amazon-link:focus-visible { outline: 3px solid #087f79; outline-offset: 2px; }
 .electronics-reference-detail > span:last-child, .electronics-source-note { color: #687783; font-size: 10px; line-height: 1.5; }
 .electronics-source-note { margin: 13px 0 0; }
-@media (max-width: 760px) { .electronics-department-layout { grid-template-columns: 1fr; gap: 15px; } .electronics-department-sidebar nav { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 900px) { .electronics-department-layout.has-video-sidebar, .electronics-department-layout.has-computer-sidebar, .electronics-department-layout.has-smart-home-sidebar { grid-template-columns: minmax(0, 1fr); } .electronics-video-list { max-height: 280px; } }
+@media (max-width: 760px) { .electronics-department-layout { grid-template-columns: 1fr; gap: 15px; } .electronics-department-sidebar nav { grid-template-columns: 1fr; } }
 @media (max-width: 760px) { .electronics-reference-grid.has-product-images { grid-template-columns: 1fr; } }
-@media (max-width: 520px) { .electronics-department-main { padding: 15px; } .electronics-reference-grid { grid-template-columns: 1fr; } .electronics-department-sidebar nav { grid-template-columns: 1fr; } .electronics-reference-grid.has-product-images .electronics-reference-card { grid-template-columns: 94px minmax(0, 1fr) 12px; } .electronics-reference-product-image { height: 138px; } .electronics-reference-detail.has-image { grid-template-columns: 1fr; } .electronics-reference-detail-image { max-height: 190px; } }
+@media (max-width: 520px) { .electronics-department-main { padding: 15px; } .electronics-reference-grid { grid-template-columns: 1fr; } .electronics-department-sidebar nav { grid-template-columns: 1fr; } .electronics-reference-grid.has-product-images .electronics-reference-card { grid-template-columns: 94px minmax(0, 1fr) 12px; } .electronics-reference-product-image { height: 138px; } .electronics-reference-detail.has-image { grid-template-columns: 1fr; } .electronics-reference-detail-image { max-height: 190px; } .department-video-choices { grid-template-columns: 1fr; } }
 
 /* Digital libraries: 10 video and 10 Ethiopian music selections */
 .embedded-player-frame { position: relative; width: 100%; min-height: 270px; aspect-ratio: 16 / 9; background: #08131d; }
@@ -2038,6 +2255,249 @@ main {
 .media-choice-copy strong { overflow: hidden; color: #172b3b; font-size: 12px; text-overflow: ellipsis; white-space: nowrap; }
 .media-choice-copy small { overflow: hidden; color: #687783; font-size: 11px; text-overflow: ellipsis; white-space: nowrap; }
 .media-choice-play { width: 29px; height: 29px; display: grid; place-items: center; color: #087f79; background: #e4f3f1; border-radius: 50%; }
+
+.kindle-feature-hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.05fr) minmax(0, 1.2fr);
+  gap: 18px;
+  margin: 10px 0 20px;
+  padding: 18px;
+  background: linear-gradient(140deg, #f4f7fa 0%, #eefaf6 100%);
+  border: 1px solid #d9e7e3;
+  border-radius: 18px;
+  box-shadow: 0 18px 36px rgba(12, 31, 45, 0.08);
+}
+.kindle-feature-copy { display: grid; align-content: center; gap: 10px; }
+.kindle-feature-copy h2 {
+  margin: 0;
+  color: #122638;
+  font: 800 clamp(26px, 3vw, 38px)/1.06 Manrope, sans-serif;
+  letter-spacing: -0.06em;
+}
+.kindle-feature-copy p {
+  margin: 0;
+  color: #516378;
+  font-size: 14px;
+  line-height: 1.6;
+}
+.kindle-feature-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.kindle-feature-meta span {
+  padding: 5px 10px;
+  color: #0d544b;
+  background: rgba(10, 133, 110, 0.09);
+  border: 1px solid rgba(10, 133, 110, 0.18);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+}
+.kindle-feature-visuals {
+  display: grid;
+  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.2fr);
+  gap: 14px;
+  align-items: stretch;
+}
+.kindle-feature-cover-wrap {
+  position: relative;
+  overflow: hidden;
+  min-height: 220px;
+  border-radius: 16px;
+  background: linear-gradient(140deg, #0d2436, #24485a);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.1);
+}
+.kindle-feature-cover-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.kindle-feature-badge {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  padding: 7px 10px;
+  color: #fff;
+  background: rgba(4, 15, 24, 0.65);
+  backdrop-filter: blur(5px);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.75px;
+  text-transform: uppercase;
+}
+.kindle-feature-video-card {
+  overflow: hidden;
+  background: #0d1d2b;
+  border: 1px solid rgba(130, 175, 171, 0.3);
+  border-radius: 16px;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.03);
+}
+.kindle-feature-video-card .embedded-player-frame,
+.kindle-feature-video-card .embedded-media-player {
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  border: 0;
+}
+.kindle-feature-video-card .embedded-player-frame {
+  height: 100%;
+}
+
+.kindle-books-showcase {
+  display: grid;
+  grid-template-columns: minmax(0, .95fr) minmax(0, 1.2fr);
+  gap: 18px;
+  margin-bottom: 20px;
+  padding: 18px;
+  background: linear-gradient(135deg, #f7f7f0 0%, #eef8f5 100%);
+  border: 1px solid #dfe8df;
+  border-radius: 18px;
+  box-shadow: 0 20px 45px rgba(18, 45, 35, 0.08);
+}
+.kindle-books-showcase-copy {
+  display: grid;
+  align-content: center;
+  gap: 10px;
+}
+.kindle-books-showcase-copy h2 {
+  margin: 0;
+  color: #152a36;
+  font: 800 clamp(24px, 3vw, 36px)/1.1 Manrope, sans-serif;
+  letter-spacing: -0.05em;
+}
+.kindle-books-showcase-copy p {
+  margin: 0;
+  color: #4d6272;
+  font-size: 14px;
+  line-height: 1.65;
+}
+.kindle-showcase-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.kindle-showcase-meta span {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 10px;
+  color: #0e5d55;
+  background: rgba(11, 121, 106, 0.09);
+  border: 1px solid rgba(11, 121, 106, 0.16);
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 800;
+  letter-spacing: 0.75px;
+  text-transform: uppercase;
+}
+.kindle-books-showcase-visuals {
+  display: grid;
+  grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+  gap: 14px;
+}
+.kindle-books-cover-panel {
+  overflow: hidden;
+  min-height: 220px;
+  border-radius: 18px;
+  background: linear-gradient(180deg, #1a2f44, #0e1f2d);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,0.08);
+}
+.kindle-books-cover-panel img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.kindle-books-video-panel {
+  overflow: hidden;
+  min-height: 220px;
+  background: #0f1d2a;
+  border: 1px solid rgba(138, 175, 163, 0.35);
+  border-radius: 18px;
+}
+.kindle-books-video-panel .embedded-player-frame,
+.kindle-books-video-panel .embedded-media-player {
+  width: 100%;
+  height: 100%;
+  min-height: 220px;
+  border: 0;
+}
+.kindle-book-shelf {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+.kindle-book-tile {
+  display: grid;
+  gap: 10px;
+  padding: 12px;
+  color: #1d2f3d;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid #dfe8ec;
+  border-radius: 16px;
+  box-shadow: 0 10px 26px rgba(16, 38, 58, 0.05);
+  transition: transform 0.16s ease, box-shadow 0.16s ease, border-color 0.16s ease;
+  cursor: pointer;
+  text-align: left;
+}
+.kindle-book-tile:hover {
+  transform: translateY(-2px);
+  border-color: #7db4a5;
+  box-shadow: 0 16px 32px rgba(18, 57, 49, 0.09);
+}
+.kindle-book-cover {
+  display: block;
+  overflow: hidden;
+  border-radius: 12px;
+  background: #eef3f5;
+}
+.kindle-book-cover img {
+  display: block;
+  width: 100%;
+  height: 210px;
+  object-fit: cover;
+}
+.kindle-book-tile strong {
+  color: #14253a;
+  font-size: 15px;
+  line-height: 1.35;
+}
+.kindle-book-tile small {
+  color: #5f7281;
+  font-size: 11px;
+}
+.kindle-book-tile > span:last-child {
+  color: #0d695f;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+@media (max-width: 760px) {
+  .kindle-books-showcase,
+  .kindle-books-showcase-visuals,
+  .kindle-book-shelf {
+    grid-template-columns: 1fr;
+  }
+  .kindle-book-cover img {
+    height: 180px;
+  }
+  .kindle-feature-hero {
+    grid-template-columns: 1fr;
+    padding: 14px;
+  }
+  .kindle-feature-visuals {
+    grid-template-columns: 1fr;
+  }
+  .kindle-feature-copy h2 {
+    letter-spacing: -0.05em;
+  }
+}
+
 .digital-catalog-page { min-height: 62vh; }
 .kindle-layout { display: grid; grid-template-columns: minmax(220px, .8fr) minmax(0, 1.5fr); gap: 18px; align-items: start; }
 .kindle-book-list { display: grid; gap: 8px; }

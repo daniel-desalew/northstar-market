@@ -1,6 +1,6 @@
 # API
 
-The API base path is `http://localhost:5000/api` by default. JSON errors use
+The API base path is `http://localhost:5001/api` by default. JSON errors use
 `{ "message": "..." }`; field validation errors also include a `details` array.
 
 ## Available in this phase

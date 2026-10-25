@@ -39,8 +39,17 @@ npm run client
 ```
 
 The client runs at `http://localhost:5173` and the API at
-`http://localhost:5000`. Check `http://localhost:5000/api/health` for API
-process health. Product and category endpoints need MongoDB to be available.
+`http://localhost:5001`. In development, the client sends `/api` requests
+through Vite's proxy to `http://127.0.0.1:5001`; set
+`VITE_API_PROXY_TARGET` in `client/.env` if the backend runs elsewhere.
+Check `http://localhost:5001/api/health` for API process health. Product,
+category, and sign-in requests also require the API to connect to MongoDB.
+
+If sign-in reports that it cannot connect to the store server, first verify
+that `server/.env` contains a valid `MONGODB_URI` and a `JWT_SECRET` of at
+least 32 characters. Then start the API with `npm run server` in one terminal
+and the client with `npm run client` in another. Confirm the API responds at
+`http://localhost:5001/api/health` before retrying sign-in.
 
 ## Add sample catalog records
 
