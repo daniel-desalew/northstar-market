@@ -1,41 +1,60 @@
 require('dotenv').config()
 
-const mongoose = require('mongoose')
-const Category = require('../models/Category')
-const Product = require('../models/Product')
+const { closeDatabase, connectDatabase, query } = require('../config/db')
 const { categories, products } = require('./sampleProducts')
-
-function slugify(value) {
-  return value.toLowerCase().trim().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '')
-}
+const slugify = require('../utils/slugify')
 
 async function seed() {
-  if (!process.env.MONGODB_URI) {
-    throw new Error('MONGODB_URI is required. Set it in server/.env before seeding.')
-  }
-  await mongoose.connect(process.env.MONGODB_URI)
+  await connectDatabase()
   const categoryIds = new Map()
 
   for (const data of categories) {
-    const slug = slugify(data.name)
-    const category = await Category.findOneAndUpdate(
-      { slug },
-      { $set: { ...data, slug, isActive: true } },
-      { upsert: true, new: true, runValidators: true, setDefaultsOnInsert: true },
+    const result = await query(
+      `INSERT INTO categories (name, slug, description, image, is_active)
+       VALUES ($1, $2, $3, $4, TRUE)
+       ON CONFLICT (slug) DO UPDATE SET
+         name = EXCLUDED.name, description = EXCLUDED.description,
+         image = EXCLUDED.image, is_active = TRUE, updated_at = NOW()
+       RETURNING id`,
+      [data.name, slugify(data.name), data.description, data.image],
     )
-    categoryIds.set(data.name, category._id)
+    categoryIds.set(data.name, result.rows[0].id)
   }
 
   for (const data of products) {
-    const { category, ...product } = data
-    await Product.findOneAndUpdate(
-      { name: product.name },
-      { $set: { ...product, category: categoryIds.get(category), isActive: true } },
-      { upsert: true, new: true, runValidators: true, setDefaultsOnInsert: true },
-    )
+    const values = [
+      data.name,
+      data.description,
+      categoryIds.get(data.category),
+      data.price,
+      data.originalPrice,
+      data.image,
+      data.stock,
+      data.rating,
+      data.reviewCount,
+      data.featured,
+    ]
+    const existing = await query('SELECT id FROM products WHERE name = $1 ORDER BY created_at LIMIT 1', [data.name])
+    if (existing.rowCount) {
+      await query(
+        `UPDATE products SET
+           description = $1, category_id = $2, price = $3, original_price = $4,
+           image = $5, stock = $6, rating = $7, review_count = $8,
+           featured = $9, is_active = TRUE, updated_at = NOW()
+         WHERE id = $10`,
+        [...values.slice(1), existing.rows[0].id],
+      )
+    } else {
+      await query(
+        `INSERT INTO products
+           (name, description, category_id, price, original_price, image, stock, rating, review_count, featured)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)`,
+        values,
+      )
+    }
   }
 
-  console.info(`Seeded ${categories.length} categories and ${products.length} products. Existing matching records were updated; other records were not deleted.`)
+  console.info(`Seeded ${categories.length} categories and ${products.length} products. Existing unrelated records were not deleted.`)
 }
 
 seed()
@@ -43,6 +62,4 @@ seed()
     console.error('Seed failed:', error)
     process.exitCode = 1
   })
-  .finally(async () => {
-    await mongoose.disconnect()
-  })
+  .finally(closeDatabase)

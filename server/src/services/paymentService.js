@@ -1,7 +1,7 @@
-const mongoose = require('mongoose')
-const Order = require('../models/Order')
+const { query } = require('../config/db')
 const ApiError = require('../utils/ApiError')
 const { getPaymentConfiguration } = require('../config/payment')
+const { requireValidId } = require('../utils/identifiers')
 
 const STRIPE_API_URL = 'https://api.stripe.com/v1'
 const REQUEST_TIMEOUT_MS = 12000
@@ -69,9 +69,16 @@ async function stripeRequest(path, { secretKey, method = 'GET', form, idempotenc
 }
 
 async function createPaymentIntent(orderId, userId) {
-  if (!mongoose.isValidObjectId(orderId)) throw new ApiError(400, 'Invalid order identifier.')
+  requireValidId(orderId, 'order')
   const { secretKey, currency } = requirePaymentConfiguration()
-  const order = await Order.findOne({ _id: orderId, user: userId })
+  const result = await query(
+    `SELECT id AS "_id", user_id AS "user", total_price::float8 AS "totalPrice",
+       status, payment_status AS "paymentStatus", payment_intent_id AS "paymentIntentId",
+       updated_at AS "updatedAt"
+     FROM orders WHERE id = $1 AND user_id = $2`,
+    [orderId, userId],
+  )
+  const order = result.rows[0]
   if (!order) throw new ApiError(404, 'Order not found.')
   if (order.paymentStatus === 'paid') throw new ApiError(409, 'This order has already been paid.')
   if (order.status === 'cancelled') throw new ApiError(409, 'A cancelled order cannot be paid.')
@@ -115,10 +122,12 @@ async function createPaymentIntent(orderId, userId) {
     throw new ApiError(502, 'The payment provider did not return a payment session.')
   }
 
-  order.paymentProvider = 'stripe'
-  order.paymentIntentId = intent.id
-  order.paymentStatus = 'pending'
-  await order.save()
+  await query(
+    `UPDATE orders SET payment_provider = 'stripe', payment_intent_id = $1,
+       payment_status = 'pending', updated_at = NOW()
+     WHERE id = $2`,
+    [intent.id, order._id],
+  )
 
   return {
     id: intent.id,
@@ -136,10 +145,13 @@ async function confirmPayment(paymentIntentId, userId) {
     throw new ApiError(400, 'Invalid payment intent identifier.')
   }
   const { secretKey, currency } = requirePaymentConfiguration()
-  const order = await Order.findOne({
-    paymentIntentId,
-    user: userId,
-  })
+  const result = await query(
+    `SELECT id AS "_id", user_id AS "user", total_price::float8 AS "totalPrice",
+       payment_status AS "paymentStatus"
+     FROM orders WHERE payment_intent_id = $1 AND user_id = $2`,
+    [paymentIntentId, userId],
+  )
+  const order = result.rows[0]
   if (!order) throw new ApiError(404, 'Payment record not found for this account.')
 
   const intent = await stripeRequest(
@@ -164,8 +176,11 @@ async function confirmPayment(paymentIntentId, userId) {
   }
 
   if (order.paymentStatus !== 'paid') {
+    await query(
+      `UPDATE orders SET payment_status = 'paid', updated_at = NOW() WHERE id = $1`,
+      [order._id],
+    )
     order.paymentStatus = 'paid'
-    await order.save()
   }
 
   return {

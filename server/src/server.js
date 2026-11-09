@@ -1,8 +1,7 @@
 require('dotenv').config()
 
 const app = require('./app')
-const mongoose = require('mongoose')
-const { connectDatabase } = require('./config/db')
+const { closeDatabase, connectDatabase } = require('./config/db')
 
 const port = Number(process.env.PORT) || 5000
 let server
@@ -21,7 +20,7 @@ async function shutdown(signal) {
       server.close((error) => (error ? reject(error) : resolve()))
     })
   }
-  await mongoose.disconnect()
+  await closeDatabase()
 }
 
 for (const signal of ['SIGINT', 'SIGTERM']) {

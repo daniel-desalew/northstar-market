@@ -3,7 +3,10 @@ const { z } = require('zod')
 const createOrderSchema = z.object({
   items: z.array(
     z.object({
-      product: z.string().regex(/^[a-f\d]{24}$/i, 'Product ID must be a valid identifier.'),
+      product: z.string().regex(
+        /^(?:[a-f\d]{24}|[0-9a-f]{8}-[0-9a-f]{4}-[1-8][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12})$/i,
+        'Product ID must be a valid identifier.',
+      ),
       quantity: z.coerce.number().int().min(1).max(100),
     }),
   ).min(1).max(50),

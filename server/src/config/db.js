@@ -1,17 +1,38 @@
-const mongoose = require('mongoose')
+const fs = require('node:fs/promises')
+const path = require('node:path')
+const { Pool } = require('pg')
 
-async function connectDatabase() {
-  const { MONGODB_URI } = process.env
-  if (!MONGODB_URI) {
-    throw new Error('MONGODB_URI is required. Configure server/.env before starting the API.')
+let pool
+
+function getPool() {
+  if (!pool) {
+    if (!process.env.DATABASE_URL) {
+      throw new Error('DATABASE_URL is required. Configure server/.env with your Neon PostgreSQL connection string.')
+    }
+    pool = new Pool({ connectionString: process.env.DATABASE_URL })
   }
-
-  mongoose.set('strictQuery', true)
-  await mongoose.connect(MONGODB_URI, {
-    serverSelectionTimeoutMS: 10000,
-  })
-  console.info(`MongoDB connected: ${mongoose.connection.name}`)
-  return mongoose.connection
+  return pool
 }
 
-module.exports = { connectDatabase }
+async function connectDatabase() {
+  const database = getPool()
+  const schema = await fs.readFile(path.join(__dirname, 'schema.sql'), 'utf8')
+  await database.query(schema)
+  await database.query('SELECT 1')
+  console.info('PostgreSQL connected.')
+  return database
+}
+
+async function closeDatabase() {
+  if (pool) {
+    await pool.end()
+    pool = undefined
+  }
+}
+
+module.exports = {
+  closeDatabase,
+  connectDatabase,
+  getPool,
+  query: (...args) => getPool().query(...args),
+}

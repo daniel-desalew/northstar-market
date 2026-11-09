@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - Node.js 20.19+ or 22.12+ and npm (required by the installed Vite version).
-- A MongoDB local instance or MongoDB Atlas database.
+- A Neon PostgreSQL database.
 
 ## Install and configure
 
@@ -16,9 +16,9 @@ Copy-Item server\.env.example server\.env
 Copy-Item client\.env.example client\.env
 ```
 
-Set `MONGODB_URI` in `server/.env` to your local connection or Atlas connection
-string. Set `JWT_SECRET` to a private random string with at least 32 characters.
-Keep `.env` files private and never commit them.
+Set `DATABASE_URL` in `server/.env` to the connection string provided by Neon.
+Set `JWT_SECRET` to a private random string with at least 32 characters. Keep
+`.env` files private and never commit them.
 
 Email sending is optional. To enable the email service, configure a Resend API
 key as `RESEND_API_KEY` and a verified sender address as `EMAIL_FROM` in
@@ -43,17 +43,30 @@ The client runs at `http://localhost:5173` and the API at
 through Vite's proxy to `http://127.0.0.1:5001`; set
 `VITE_API_PROXY_TARGET` in `client/.env` if the backend runs elsewhere.
 Check `http://localhost:5001/api/health` for API process health. Product,
-category, and sign-in requests also require the API to connect to MongoDB.
+category, and sign-in requests also require the API to connect to Neon.
 
-If sign-in reports that it cannot connect to the store server, first verify
-that `server/.env` contains a valid `MONGODB_URI` and a `JWT_SECRET` of at
-least 32 characters. Then start the API with `npm run server` in one terminal
-and the client with `npm run client` in another. Confirm the API responds at
+If sign-in reports that it cannot connect to the store server, verify that
+`server/.env` contains a valid `DATABASE_URL` and a `JWT_SECRET` of at least
+32 characters. Then start the API with `npm run server` in one terminal and the
+client with `npm run client` in another. Confirm the API responds at
 `http://localhost:5001/api/health` before retrying sign-in.
+
+### Migrate existing MongoDB data
+
+Back up the source and target databases. Temporarily configure both
+`MONGODB_URI` (the source) and `DATABASE_URL` (the Neon target) in
+`server/.env`, then run:
+
+```powershell
+npm run migrate:mongo
+```
+
+The migration preserves MongoDB IDs, is safe to rerun, and does not change the
+source database. After checking the records in Neon, remove `MONGODB_URI`.
 
 ## Add sample catalog records
 
-After MongoDB is configured and the API environment is ready:
+After Neon is configured and the API environment is ready:
 
 ```powershell
 npm run seed

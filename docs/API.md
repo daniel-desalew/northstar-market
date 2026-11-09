@@ -38,10 +38,10 @@ Authentication uses `Authorization: Bearer <token>`. Account registration
 always creates a customer. Do not grant admin roles through client input.
 
 Order creation expects `items: [{ product, quantity }]` and a `shippingAddress`.
-Prices and stock are read from MongoDB, never trusted from the browser. Order
-creation reserves stock inside a MongoDB transaction; use MongoDB Atlas or a
-local replica set. Shipping is $5.99 below a $50 subtotal and free at or above
-$50. Payment remains unpaid; this endpoint does not charge a customer.
+Prices and stock are read from Neon PostgreSQL, never trusted from the browser.
+Order creation reserves stock and creates the order in a PostgreSQL transaction.
+Shipping is $5.99 below a $50 subtotal and free at or above $50. Payment remains
+unpaid; this endpoint does not charge a customer.
 
 Password reset, addresses, reviews, wishlist synchronization, and payment
 webhook handling are not implemented yet. To enable Stripe PaymentIntents,

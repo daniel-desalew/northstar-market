@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-const User = require('../models/User')
+const { query } = require('../config/db')
 const ApiError = require('../utils/ApiError')
 
 async function authenticate(req, res, next) {
@@ -15,9 +15,12 @@ async function authenticate(req, res, next) {
 
   try {
     const payload = jwt.verify(token, process.env.JWT_SECRET, { algorithms: ['HS256'] })
-    const user = await User.findById(payload.sub)
-      .select('_id name email role isActive')
-      .lean()
+    const result = await query(
+      `SELECT id AS "_id", name, email, role, is_active AS "isActive"
+       FROM users WHERE id = $1`,
+      [payload.sub],
+    )
+    const user = result.rows[0]
     if (!user || !user.isActive) throw new ApiError(401, 'Your session is no longer valid.')
     req.user = user
     next()
